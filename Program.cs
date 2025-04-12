@@ -38,6 +38,8 @@ builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IChatService, ChatService>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddScoped<IIdeaService, IdeaService>();
 builder.Services.AddScoped<IIdeaRepository, IdeaRepository>();
 
 builder.Services.AddScoped<EmailCacheService>();

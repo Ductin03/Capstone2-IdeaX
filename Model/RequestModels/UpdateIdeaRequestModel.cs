@@ -2,15 +2,16 @@
 
 namespace IdeaX.Model.RequestModels
 {
-    public class CreateIdeaRequestModel
+    public class UpdateIdeaRequestModel
     {
-        [Required, MaxLength(250)]
+        [Required,MaxLength(250)]
         public string Title { get; set; }
         public Guid? CommunityId { get; set; }
+
         [Required]
         public string Description { get; set; }
+
         [Required]
-        public Guid InitiatorId { get; set; }
         public Guid CategoryId { get; set; }
         public string Status { get; set; }
         public bool CopyrightStatus { get; set; } = false;
@@ -19,7 +20,5 @@ namespace IdeaX.Model.RequestModels
         public decimal? Price { get; set; }
 
         public bool? IsForSale { get; set; } = false;
-      
-        public Guid CreatedBy { get; set; }
     }
 }

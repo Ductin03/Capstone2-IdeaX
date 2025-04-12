@@ -1,29 +1,38 @@
 ﻿using IdeaX.Entities;
 using IdeaX.Response;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace IdeaX.Repository
 {
     public class IdeaRepository : IIdeaRepository
     {
-        public Task<Responses> CreateAsync(Idea entity)
+        private readonly IdeaXDbContext _context;
+        public IdeaRepository(IdeaXDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<Responses> CreateAsync(Idea entity)
+        {
+            await _context.Ideas.AddAsync(entity);
+            return new Responses(true, "them thanh cong");
         }
 
-        public Task<Responses> DeleteAsync(Idea entity)
+        public async Task<Responses> DeleteAsync(Idea entity)
         {
-            throw new NotImplementedException();
+             _context.Ideas.Update(entity);
+            return new Responses(true, "xoa thanh cong");
         }
 
-        public Task<Idea> FindByIdAsync(Guid id)
+        public async Task<Idea> FindByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var ideaExist = await _context.Ideas.FirstOrDefaultAsync(x => x.Id == id);
+            return ideaExist;
         }
 
         public Task<List<Idea>> GetAllAsync()
         {
-            throw new NotImplementedException();
+           return _context.Ideas.ToListAsync();
         }
 
         public Task<Idea> GetByAsync(Expression<Func<Idea, bool>> predicate)
@@ -31,9 +40,10 @@ namespace IdeaX.Repository
             throw new NotImplementedException();
         }
 
-        public Task<Responses> UpdateAsync(Idea entity)
+        public async Task<Responses> UpdateAsync(Idea entity)
         {
-            throw new NotImplementedException();
+             _context.Ideas.Update(entity);
+            return new Responses(true, "cap nhat thanh cong");
         }
     }
 }
