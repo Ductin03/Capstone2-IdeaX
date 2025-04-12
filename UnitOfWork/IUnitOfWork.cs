@@ -7,6 +7,8 @@ namespace IdeaX.UnitOfWork
     {
         IUserRepository UserRepository { get; }
         IRoleRepository RoleRepository { get; }
+        ICategoryRepository CategoryRepository { get; }
+        IIdeaRepository IdeaRepository { get; }
         IdeaXDbContext Context { get; }
         Task SavechangeAsync();
     }

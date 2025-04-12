@@ -9,5 +9,7 @@ namespace IdeaX.Entities
         public DbSet<Role> Roles{ get; set; }
         public DbSet<Verification> Verifications { get; set; }
         public DbSet<ChatMessage> Messages { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Idea> Ideas { get; set; }
     }
 }

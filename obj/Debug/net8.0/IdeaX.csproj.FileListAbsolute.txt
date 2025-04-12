@@ -137,3 +137,7 @@ D:\Capstone2_IdeaX\IdeaX\IdeaX\bin\Debug\net8.0\Microsoft.AspNetCore.SignalR.Cli
 D:\Capstone2_IdeaX\IdeaX\IdeaX\bin\Debug\net8.0\Microsoft.AspNetCore.SignalR.Common.dll
 D:\Capstone2_IdeaX\IdeaX\IdeaX\bin\Debug\net8.0\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
 D:\Capstone2_IdeaX\IdeaX\IdeaX\bin\Debug\net8.0\Microsoft.Extensions.Features.dll
+D:\Capstone2_IdeaX\IdeaX\IdeaX\obj\Debug\net8.0\IdeaX.sourcelink.json
+D:\Capstone2_IdeaX\IdeaX\IdeaX\bin\Debug\net8.0\MediatR.dll
+D:\Capstone2_IdeaX\IdeaX\IdeaX\bin\Debug\net8.0\MediatR.Contracts.dll
+D:\Capstone2_IdeaX\IdeaX\IdeaX\bin\Debug\net8.0\MediatR.Extensions.Microsoft.DependencyInjection.dll

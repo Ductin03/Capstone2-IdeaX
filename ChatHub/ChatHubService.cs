@@ -10,7 +10,7 @@ namespace IdeaX.ChatHub
     public class ChatHubService : Hub
     {
         private readonly IChatService _chatService;
-        public static readonly ConcurrentDictionary<Guid, string> _userConnections = new ConcurrentDictionary<Guid, string>();
+        private static readonly ConcurrentDictionary<Guid, string> _userConnections = new ConcurrentDictionary<Guid, string>();
 
         public ChatHubService(IChatService chatService)
         {
@@ -75,5 +75,5 @@ namespace IdeaX.ChatHub
            
             await base.OnDisconnectedAsync(exception);
         }
-    }
+    }   
 }

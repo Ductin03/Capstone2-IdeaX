@@ -1,23 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace IdeaX.Entities
+namespace IdeaX.Model.RequestModels
 {
-    public class Idea : BaseEntity
+    public class CreateIdeaRequestModel
     {
-        [Required,MaxLength(250)]
-        public string IdeaCode { get; set; }
-
-        [Required, MaxLength(250)]
+        [Required, StringLength(255)]
         public string Title { get; set; }
-        public  Guid? CommunityId { get; set; }
+        public Guid? CommunityId { get; set; }
 
         [Required]
         public string Description { get; set; }
         [Required]
         public Guid InitiatorId { get; set; }
 
-        [Required]
+        [Required, StringLength(100)]
         public Guid CategoryId { get; set; }
         public string Status { get; set; }
         public bool CopyrightStatus { get; set; } = false;
@@ -28,10 +24,10 @@ namespace IdeaX.Entities
         public bool? IsForSale { get; set; } = false;
         public Guid? InvestorId { get; set; } // ID nhà đầu tư (nếu có)
         public DateTime? InvestmentDate { get; set; } // Ngày đầu tư
-        public int TotalViews { get; set; } = 0;
-        public int TotalLikes { get; set; } = 0;
-        public int TotalComments { get; set; } = 0;
-        public int TotalRatings { get; set; } = 0;
+        public int? TotalViews { get; set; } = 0;
+        public int? TotalLikes { get; set; } = 0;
+        public int? TotalComments { get; set; } = 0;
+        public int? TotalRatings { get; set; } = 0;
+        public Guid CreatedBy { get; set; }
     }
 }
-
