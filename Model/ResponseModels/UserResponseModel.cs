@@ -15,5 +15,6 @@ namespace IdeaX.Model.ResponseModels
         public string CCCD { get; set; }
         public string CCCDFront { get; set; } // Ảnh CCCD mặt trước 
         public string CCCDBack { get; set; } // Ảnh CCCD mặt sau 
+        public DateTime CreatedOn { get; set; }
     }
 }

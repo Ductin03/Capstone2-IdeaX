@@ -11,6 +11,8 @@ namespace IdeaX.Model.RequestModels
         public string Description { get; set; }
         [Required]
         public Guid InitiatorId { get; set; }
+        public string CollaborationType { get; set; }
+        public string ImageUrls { get; set; }
         public Guid CategoryId { get; set; }
         public string Status { get; set; }
         public bool CopyrightStatus { get; set; } = false;
@@ -21,5 +23,6 @@ namespace IdeaX.Model.RequestModels
         public bool? IsForSale { get; set; } = false;
       
         public Guid CreatedBy { get; set; }
+        public bool IsPublic { get; set; } = true;
     }
 }

@@ -333,5 +333,10 @@ namespace IdeaX.Services
 
 
         }
+
+        public async Task<BasePaginationResponseModel<UserResponseModel>> GetAllUser(GetUserRequestModel request)
+        {
+            return await _unitOfWork.UserRepository.GetAllUserAsync(request);
+        }
     }
 }

@@ -18,9 +18,10 @@ namespace IdeaX.Repository
             return new Responses(true, "them thanh cong");
         }
 
-        public Task<Responses> DeleteAsync(Category entity)
+        public async Task<Responses> DeleteAsync(Category entity)
         {
-            throw new NotImplementedException();
+            _context.Categories.Update(entity);
+            return new Responses(true, "xoa thanh cong");
         }
 
         public async Task<Category> FindByIdAsync(Guid id)
@@ -38,9 +39,10 @@ namespace IdeaX.Repository
             throw new NotImplementedException();
         }
 
-        public Task<Responses> UpdateAsync(Category entity)
+        public async Task<Responses> UpdateAsync(Category entity)
         {
-            throw new NotImplementedException();
+            _context.Categories.Update(entity);
+            return new Responses(true, "cap nhat thanh cong");
         }
     }
 }

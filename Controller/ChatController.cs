@@ -1,5 +1,7 @@
-﻿using IdeaX.ChatHub;
+﻿using IdeaX.Attributes;
+using IdeaX.ChatHub;
 using IdeaX.Entities;
+using IdeaX.Model.RequestModels;
 using IdeaX.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace IdeaX.Controller
 {
-    [Route("api/[controller]")]
+    [Route("v1/api/client[controller]")]
     [ApiController]
     public class ChatController : ControllerBase
     {
@@ -20,13 +22,28 @@ namespace IdeaX.Controller
             _hubContext = hubContext;
         }
 
+        /// <summary>
+        /// Get chat history between two users
+        /// HTTP GET: v1/api/client/chat/{senderId}/{receiverId}
+        /// </summary>
+        /// <param name="senderId">The sender's user ID</param>
+        /// <param name="receiverId">The receiver's user ID</param>
+        /// <returns>A list of chat messages between the sender and receiver</returns>
+        [Authorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Investor)]
         [HttpGet("{senderId}/{receiverId}")]
-        public async Task<IActionResult> GetMessages([FromQuery]Guid senderId, Guid receiverId)
+        public async Task<IActionResult> GetMessages([FromQuery] Guid senderId, Guid receiverId)
         {
             var messages = await _chatService.GetChatHistory(senderId, receiverId);
             return Ok(messages);
         }
 
+        /// <summary>
+        /// Send a chat message to a receiver
+        /// HTTP POST: v1/api/client/chat
+        /// </summary>
+        /// <param name="message">The message to send</param>
+        /// <returns>A success message after sending the message</returns>
+        [Authorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Investor)]
         [HttpPost]
         public async Task<IActionResult> SendMessage([FromBody] ChatMessage message)
         {

@@ -1,5 +1,6 @@
 ﻿using IdeaX.Entities;
 using IdeaX.interfaces;
+using IdeaX.Model.RequestModels;
 using IdeaX.Model.ResponseModels;
 
 namespace IdeaX.Repository
@@ -10,5 +11,6 @@ namespace IdeaX.Repository
         Task<User> CheckIfEmailExistAsync(string email);
         Task<UserResponseModel> GetInfoUserByIdAsync(Guid id);
         Task<Verification> FindEmailByOtp(string otp);
+        Task<BasePaginationResponseModel<UserResponseModel>> GetAllUserAsync(GetUserRequestModel model);
     }
 }

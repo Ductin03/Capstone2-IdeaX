@@ -1,5 +1,6 @@
 ﻿using IdeaX.Entities;
 using IdeaX.Model.RequestModels;
+using IdeaX.Model.ResponseModels;
 using IdeaX.Response;
 using IdeaX.UnitOfWork;
 
@@ -8,9 +9,11 @@ namespace IdeaX.Services
     public class IdeaService : IIdeaService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public IdeaService(IUnitOfWork unitOfWork)
+        private readonly CloudinaryService _cloudinaryService;
+        public IdeaService(IUnitOfWork unitOfWork, CloudinaryService cloudinaryService)
         {
             _unitOfWork = unitOfWork;
+            _cloudinaryService = cloudinaryService;
         }
 
         public async Task<Responses> CreateIdea(CreateIdeaRequestModel request)
@@ -18,15 +21,30 @@ namespace IdeaX.Services
             var categoryExist = await _unitOfWork.CategoryRepository.FindByIdAsync(request.CategoryId);
             if(categoryExist == null)
             {
-                return new Responses(false, "khong tim thay");
+                return new Responses(false, "khong tim thay danh muc");
             }
+            var userExist = await _unitOfWork.UserRepository.FindByIdAsync(request.InitiatorId);
+            if (userExist == null)
+            {
+                return new Responses(false, "khong tim thay user");
+            }
+            string imageUrls = null!;
+            if (request.ImageUrls!= null)
+            {
+                imageUrls = await _cloudinaryService.UploadImageAsync(request.ImageUrls);
+            }
+
             var idea = new Idea
             { 
                 Id = Guid.NewGuid(),
                 CategoryId = request.CategoryId,
                 CommunityId = request.CommunityId,
+                InitiatorId = request.InitiatorId,
+                CollaborationType = request.CollaborationType,
                 CopyrightCertificate = request.CopyrightCertificate,
                 CopyrightStatus = request.CopyrightStatus,
+                ImageUrls = imageUrls,
+                isPublic = request.IsPublic,
                 IdeaCode = "IDEA-" + Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper(),
                 Status = request.Status,
                 Description = request.Description,
@@ -54,9 +72,30 @@ namespace IdeaX.Services
             return new Responses(true, "xoa thanh cong");
         }
 
-        public async Task<List<Idea>> GetAllIdea()
+        public async Task<BasePaginationResponseModel<GetIdeaResponseModel>> GetAllIdeasPrivateForInvestor(GetIdeaRequestModel request)
         {
-            return await _unitOfWork.IdeaRepository.GetAllAsync();
+            return await _unitOfWork.IdeaRepository.GetAllIdeaPrivateForInvestorAsync(request);
+        }
+
+        public async Task<BasePaginationResponseModel<GetIdeaResponseModel>> GetAllIdeasPublic(GetIdeaRequestModel request)
+        {
+            return await _unitOfWork.IdeaRepository.GetAllIdeasPublicAsync(request);
+        }
+
+        public async Task<List<GetIdeaResponseModel>> GetIdeaByCategory(Guid categoryId)
+        {
+            var categoryExist = await _unitOfWork.CategoryRepository.FindByIdAsync(categoryId);
+            return categoryExist != null
+                ? await _unitOfWork.IdeaRepository.GetIdeaByCategoryAsync(categoryId)
+                : throw new Exception("Category khong ton tai");
+        }
+
+        public async Task<List<GetIdeaResponseModel>> GetIdeaByUserId(Guid userId)
+        {
+            var userExist = await _unitOfWork.UserRepository.FindByIdAsync(userId);
+            return userExist != null
+                ? await _unitOfWork.IdeaRepository.GetIdeaByUserIdAsync(userId)
+                : throw new Exception("user khong ton tai");
         }
 
         public async Task<Responses> UpdateIdea(UpdateIdeaRequestModel request, Guid id)

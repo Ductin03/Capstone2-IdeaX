@@ -6,6 +6,8 @@ namespace IdeaX.Repository
     {
         Task SaveMessageAsync(ChatMessage message);
         Task<List<ChatMessage>> GetMessageAsync(Guid senderId, Guid receiverId);
+        //Task<bool> UpdateMessageAsync(ChatMessage message);
+        //Task<bool> DeleteMessageAsync(Guid id);
 
     }
 }

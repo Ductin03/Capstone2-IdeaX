@@ -1,5 +1,6 @@
 ﻿using IdeaX.Entities;
 using IdeaX.interfaces;
+using IdeaX.Model.RequestModels;
 using IdeaX.Model.ResponseModels;
 using IdeaX.Response;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,40 @@ namespace IdeaX.Repository
         public Task<List<User>> GetAllAsync()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<BasePaginationResponseModel<UserResponseModel>> GetAllUserAsync(GetUserRequestModel model)
+        {
+            var query = from u in _context.Users
+                        join r in _context.Roles on u.RoleId equals r.Id
+                        select new UserResponseModel
+                        {
+                            Id = u.Id,
+                            Address = u.Address,
+                            Avatar = u.Avatar,
+                            CCCD = u.CCCD,
+                            CCCDBack = u.CCCDBack,
+                            CCCDFront = u.CCCDFront,
+                            Email = u.Email,
+                            FullName = u.FullName,
+                            Phone = u.Phone,
+                            RoleName = r.RoleName,
+                            Username = u.Username,
+                            CreatedOn = u.CreatedOn
+                        };
+            if (!string.IsNullOrEmpty(model.Keyword))
+            {
+                query = query.Where(x => x.FullName.ToLower().Contains(model.Keyword.ToLower()));
+            }
+            query = query.OrderByDescending(x => x.CreatedOn);
+            var total = await query.CountAsync();
+            if(model.PageSize > 0)
+            {
+                query = query.Skip(model.PageIndex * model.PageSize).Take(model.PageSize);
+            }
+            var items = await query.ToListAsync();
+            return new BasePaginationResponseModel<UserResponseModel>(model.PageIndex, model.PageSize, total, items);
+
         }
 
         public async Task<User> GetByAsync(Expression<Func<User, bool>> predicate)

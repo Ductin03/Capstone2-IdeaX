@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdeaX.Controller
 {
     [Route("v1/api/admin/[controller]")]
+    [Authorize(RoleRequestModel.Admin)]
     [ApiController]
     public class RolesController : ControllerBase
     {
@@ -16,13 +17,13 @@ namespace IdeaX.Controller
         {
             _roleService = roleService;
         }
+
         /// <summary>
-        /// Administrator adds permissions to the system
+        /// Create a new role in the system
         /// HTTP POST: v1/api/admin/roles
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        //[Authorize(RoleRequestModel.Founder)]
+        /// <param name="request">The request containing the role details</param>
+        /// <returns>A response indicating success or failure</returns>
         [HttpPost]
         public async Task<ActionResult<Responses>> CreateRole(CreateRoleRequestModel request)
         {
@@ -30,7 +31,13 @@ namespace IdeaX.Controller
             return response.Flag ? Ok(response) : BadRequest(response);
         }
 
-        //[Authorize(RoleRequestModel.Founder)]
+        /// <summary>
+        /// Update an existing role in the system
+        /// HTTP PATCH: v1/api/admin/roles/{id}
+        /// </summary>
+        /// <param name="id">The ID of the role to update</param>
+        /// <param name="request">The request containing updated role details</param>
+        /// <returns>A response indicating success or failure</returns>
         [HttpPatch("{id}")]
         public async Task<ActionResult<Responses>> UpdateRole(Guid id, UpdateRoleRequestModel request)
         {
@@ -38,7 +45,11 @@ namespace IdeaX.Controller
             return response.Flag ? Ok(response) : BadRequest(response);
         }
 
-        //[Authorize(RoleRequestModel.Founder)]
+        /// <summary>
+        /// Get all roles in the system
+        /// HTTP GET: v1/api/admin/roles
+        /// </summary>
+        /// <returns>A list of all roles</returns>
         [HttpGet]
         public async Task<IActionResult> GetAllRole()
         {
@@ -46,21 +57,30 @@ namespace IdeaX.Controller
             return Ok(roles);
         }
 
-        //[Authorize(RoleRequestModel.Founder)]
-        [HttpDelete("{roleId}")]
-        public async Task<ActionResult<Responses>> RemoveRole(Guid roleId)
+        /// <summary>
+        /// Delete a role by its ID
+        /// HTTP DELETE: v1/api/admin/roles/{id}
+        /// </summary>
+        /// <param name="id">The ID of the role to delete</param>
+        /// <returns>A response indicating success or failure</returns>
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Responses>> RemoveRole(Guid id)
         {
-            var response = await _roleService.DeleteRole(roleId);
+            var response = await _roleService.DeleteRole(id);
             return response.Flag ? Ok(response) : BadRequest(response);
         }
 
-        //[Authorize(RoleRequestModel.Founder)]
+        /// <summary>
+        /// Get a specific role by its ID
+        /// HTTP GET: v1/api/admin/roles/find-role/{id}
+        /// </summary>
+        /// <param name="id">The ID of the role to fetch</param>
+        /// <returns>The details of the requested role</returns>
         [HttpGet("find-role/{id}")]
         public async Task<IActionResult> GetRoleById(Guid id)
         {
             var response = await _roleService.GetRoleById(id);
             return Ok(response);
         }
-
     }
 }

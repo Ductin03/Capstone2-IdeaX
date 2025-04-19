@@ -4,5 +4,7 @@
     {
         public const string Admin = "Admin";
         public const string Founder = "Founder";
+        public const string Investor = "Investor";
+
     }
 }
