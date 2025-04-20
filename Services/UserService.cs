@@ -338,5 +338,22 @@ namespace IdeaX.Services
         {
             return await _unitOfWork.UserRepository.GetAllUserAsync(request);
         }
+
+        public async Task<Responses> CreateInvestorPreferencesAsync(CreateInvestorPreferencesRequestModel request, Guid userId)
+        {
+            var userExist = await _unitOfWork.UserRepository.FindByIdAsync(userId);
+            if(userExist == null)
+            {
+                return new Responses(false, "Khon ton tai user");
+            }
+            userExist.FundingRangeMax = request.FundingRangeMax;
+            userExist.FundingRangeMin = request.FundingRangeMin;
+            userExist.PreferredIndustries = request.PreferredIndustries;
+            userExist.PreferredRegions = request.PreferredRegions;
+            userExist.PreferredStages = request.PreferredStages;
+            await _unitOfWork.UserRepository.UpdateAsync(userExist);
+            await _unitOfWork.SavechangeAsync();
+            return new Responses(true, "Them thanh cong");
+        }
     }
 }

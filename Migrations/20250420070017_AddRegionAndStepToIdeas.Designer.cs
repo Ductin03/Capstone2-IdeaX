@@ -3,6 +3,7 @@ using System;
 using IdeaX.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IdeaX.Migrations
 {
     [DbContext(typeof(IdeaXDbContext))]
-    partial class IdeaXDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250420070017_AddRegionAndStepToIdeas")]
+    partial class AddRegionAndStepToIdeas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -291,12 +294,6 @@ namespace IdeaX.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<decimal?>("FundingRangeMax")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("FundingRangeMin")
-                        .HasColumnType("numeric");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -309,15 +306,6 @@ namespace IdeaX.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
-
-                    b.Property<string>("PreferredIndustries")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PreferredRegions")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PreferredStages")
-                        .HasColumnType("text");
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");

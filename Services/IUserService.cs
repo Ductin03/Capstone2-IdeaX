@@ -16,5 +16,6 @@ namespace IdeaX.Services
         Task<Responses> ForgotPassword(string email);
         Task<Responses> ResetPassword(string otp, string password, string confirmPassword);
         Task<BasePaginationResponseModel<UserResponseModel>> GetAllUser(GetUserRequestModel request);
+        Task<Responses> CreateInvestorPreferencesAsync(CreateInvestorPreferencesRequestModel request, Guid userId);
     }
 }

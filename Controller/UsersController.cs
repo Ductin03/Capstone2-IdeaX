@@ -4,6 +4,7 @@ using IdeaX.Response;
 using IdeaX.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace IdeaX.Controller
 {
@@ -120,6 +121,29 @@ namespace IdeaX.Controller
         public async Task<IActionResult> GetAllUser([FromQuery] GetUserRequestModel request)
         {
             return Ok(await _userService.GetAllUser(request));
+        }
+
+        /// <summary>
+        /// Create or update investor preferences for the authenticated user
+        /// HTTP PATCH: v1/api/client/users
+        /// </summary>
+        /// <param name="request">The request model containing investor preference details</param>
+        /// <returns>A response indicating success or failure of the operation</returns>
+        [HttpPatch]
+        public async Task<ActionResult<Responses>> CreateInvestorPreferencesAsync(CreateInvestorPreferencesRequestModel request)
+        {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if(Guid.TryParse(user, out Guid userId))
+            {
+               var response = await _userService.CreateInvestorPreferencesAsync(request, userId);
+               return response.Flag ? Ok(response) : BadRequest(response);  
+            }
+            return Unauthorized(new Responses
+            {
+                Flag = false,
+                Message = "Unauthorized"
+            });
+
         }
     }
 }

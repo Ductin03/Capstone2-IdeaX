@@ -34,6 +34,12 @@ namespace IdeaX.Repository
             return new Responses(true, "Đăng ký thành công");
         }
 
+        public async Task<Responses> CreateInvestorPreferencesAsync(User user)
+        {
+            _context.Users.Update(user);
+            return new Responses(true, "Them thanh cong");
+        }
+
         public Task<Responses> DeleteAsync(User entity)
         {
             throw new NotImplementedException();

@@ -36,5 +36,11 @@ namespace IdeaX.Entities
         [Required]
         [MaxLength(250)]
         public string CCCDBack { get; set; } // Ảnh CCCD mặt sau 
+        public string? PreferredIndustries { get; set; }
+        public string? PreferredStages { get; set; }
+        public string? PreferredRegions { get; set; }
+        public decimal? FundingRangeMin { get; set; }
+        public decimal? FundingRangeMax { get; set; }
+
     }
 }

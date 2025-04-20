@@ -3,6 +3,7 @@ using IdeaX.ChatHub;
 using IdeaX.Entities;
 using IdeaX.Model.RequestModels;
 using IdeaX.Repository;
+using IdeaX.Seeder;
 using IdeaX.Services;
 using IdeaX.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -36,6 +37,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IChatService, ChatService>();
+
+builder.Services.AddScoped<MatchingService>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -128,6 +131,11 @@ builder.Services.AddSingleton<CloudinaryService>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<IdeaXDbContext>();
+    DbInitializer.Seed(db);
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

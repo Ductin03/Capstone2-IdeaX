@@ -1,21 +1,28 @@
 ﻿using IdeaX.Attributes;
+using IdeaX.Entities;
 using IdeaX.Model.RequestModels;
 using IdeaX.Response;
 using IdeaX.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdeaX.Controller
 {
     [Route("v1/api/client/[controller]")]
-    [Authorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Investor)]
+    //[Authorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Investor)]
     [ApiController]
     public class IdeasController : ControllerBase
     {
         private readonly IIdeaService _ideaService;
-        public IdeasController(IIdeaService ideaService)
+        private readonly IdeaXDbContext _context;
+        private readonly MatchingService _matchingService;
+
+        public IdeasController(IIdeaService ideaService, IdeaXDbContext context, MatchingService matchingService)
         {
             _ideaService = ideaService;
+            _matchingService = matchingService;
+            _context = context;
         }
 
         /// <summary>
@@ -108,6 +115,43 @@ namespace IdeaX.Controller
         {
             var ideas = await _ideaService.GetIdeaByCategory(categoryId);
             return Ok(ideas);
+        }
+
+        [HttpGet("{id}/match-investors")]
+        public async Task<IActionResult> MatchInvestors(Guid id)
+        {
+            var idea = await _context.Ideas.FindAsync(id);
+            if (idea == null)
+                return NotFound();
+
+            // Lọc nhà đầu tư dựa trên RoleId
+            var investorRoleId = await _context.Roles
+                .Where(r => r.RoleName == "Investor")
+                .Select(r => r.Id)
+                .FirstOrDefaultAsync();
+
+            var investors = await _context.Users
+                .Where(u => u.RoleId == investorRoleId)
+                .ToListAsync();
+
+            var matches = _matchingService.MatchIdeaWithInvestors(idea, investors);
+            var result = matches.Select(m => new
+            {
+                Investor = new
+                {
+                    m.Investor.Id,
+                    m.Investor.FullName,
+                    m.Investor.Email,
+                    m.Investor.PreferredIndustries,
+                    m.Investor.PreferredStages,
+                    m.Investor.PreferredRegions,
+                    m.Investor.FundingRangeMin,
+                    m.Investor.FundingRangeMax
+                },
+                Score = m.Score
+            });
+
+            return Ok(result);
         }
     }
 }

@@ -2,6 +2,7 @@
 using IdeaX.interfaces;
 using IdeaX.Model.RequestModels;
 using IdeaX.Model.ResponseModels;
+using IdeaX.Response;
 
 namespace IdeaX.Repository
 {
@@ -12,5 +13,6 @@ namespace IdeaX.Repository
         Task<UserResponseModel> GetInfoUserByIdAsync(Guid id);
         Task<Verification> FindEmailByOtp(string otp);
         Task<BasePaginationResponseModel<UserResponseModel>> GetAllUserAsync(GetUserRequestModel model);
+        Task<Responses> CreateInvestorPreferencesAsync(User user);
     }
 }

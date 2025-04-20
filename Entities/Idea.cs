@@ -38,6 +38,8 @@ namespace IdeaX.Entities
         public int TotalLikes { get; set; } = 0;
         public int TotalComments { get; set; } = 0;
         public int TotalRatings { get; set; } = 0;
+        public string Region { get; set; }
+        public string Stage { get; set; }
         public bool isPublic { get; set; }
     }
 }
