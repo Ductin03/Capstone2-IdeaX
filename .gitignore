@@ -1,0 +1,10 @@
+﻿# Bỏ qua migrations
+/Migrations/
+
+# Bỏ qua appsettings và các file nhạy cảm khác
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+
+# Visual Studio cache files
+.vs/
