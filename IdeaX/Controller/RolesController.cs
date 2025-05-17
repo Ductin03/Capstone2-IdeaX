@@ -2,13 +2,13 @@
 using IdeaX.Model.RequestModels;
 using IdeaX.Response;
 using IdeaX.Services;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization; 
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdeaX.Controller
 {
     [Route("v1/api/admin/[controller]")]
-    [Authorize(RoleRequestModel.Admin)]
+    [CustomAuthorize(RoleRequestModel.Admin)]
     [ApiController]
     public class RolesController : ControllerBase
     {
@@ -81,6 +81,29 @@ namespace IdeaX.Controller
         {
             var response = await _roleService.GetRoleById(id);
             return Ok(response);
+        }
+        
+        /// <summary>
+        /// Lấy danh sách role công khai, loại trừ Admin
+        /// HTTP GET: v1/api/admin/roles/public
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet("public")]
+        public async Task<IActionResult> GetPublicRoles()
+        {
+            var allRoles = await _roleService.GetAllRole();
+            
+            // Lọc bỏ role "Admin"
+            var filtered = allRoles
+                .Where(r => !string.Equals(r.RoleName, "Admin", StringComparison.OrdinalIgnoreCase))
+                .Select(r => new {
+                    r.Id,
+                    r.RoleName,
+                    r.Description
+                })
+                .ToList();
+
+            return Ok(filtered);
         }
     }
 }

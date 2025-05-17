@@ -116,7 +116,7 @@ namespace IdeaX.Controller
         /// </summary>
         /// <param name="request">The request model containing pagination and filter parameters</param>
         /// <returns>A list of users based on the request</returns>
-        [Authorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Founder)]
+        [CustomAuthorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Founder)]
         [HttpGet]
         public async Task<IActionResult> GetAllUser([FromQuery] GetUserRequestModel request)
         {

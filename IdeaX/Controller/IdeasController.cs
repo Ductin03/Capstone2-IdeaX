@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace IdeaX.Controller
 {
     [Route("v1/api/client/[controller]")]
-    [Authorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Investor)]
+    [CustomAuthorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Investor)]
     [ApiController]
     public class IdeasController : ControllerBase
     {

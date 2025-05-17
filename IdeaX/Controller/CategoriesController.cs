@@ -28,7 +28,7 @@ namespace IdeaX.Controller
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        [Authorize(RoleRequestModel.Admin)]
+        [CustomAuthorize(RoleRequestModel.Admin)]
         [HttpPost]
         public async Task<ActionResult<Responses>> CreateCategory([FromBody] CreateCategoryCommand command)
         {
@@ -42,7 +42,7 @@ namespace IdeaX.Controller
         /// </summary>
         /// <param name="id">The ID of the category</param>
         /// <returns></returns>
-        [Authorize(RoleRequestModel.Admin)]
+        [CustomAuthorize(RoleRequestModel.Admin)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(Guid id)
         {

@@ -70,11 +70,29 @@ namespace IdeaX.Services
 
             if (!isAuthen)
             {
-                throw new UnauthorizedAccessException("Unauthorized");
+                throw new UnauthorizedAccessException("Sai tài khoản hoặc mật khẩu");
             }
+            
+            var authResult = await GenerateTokens(user, roleName);
+            
+            authResult.User = new UserResponseModel
+            {
+                Id          = user.Id,
+                Username    = user.Username,
+                Email       = user.Email,
+                RoleName    = roleName,
+                Phone       = user.Phone,
+                FullName    = user.FullName,
+                Address     = user.Address,
+                Avatar      = user.Avatar,
+                CCCD        = user.CCCD,
+                CCCDFront   = user.CCCDFront,
+                CCCDBack    = user.CCCDBack,
+                CreatedOn   = user.CreatedOn
+            };
 
             // Tạo token JWT và refresh token
-            return await GenerateTokens(user, roleName);
+            return authResult;
         }
 
         // Phương thức xác thực qua Google OAuth
@@ -190,38 +208,48 @@ namespace IdeaX.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:Key"]);
 
+            // Lấy số phút cấu hình
+            var accessTokenExpiryMinutes = Convert.ToDouble(_configuration["JwtSettings:AccessTokenExpiryMinutes"]);
+
+            // Tính thời điểm hết hạn
+            var expiresAt = DateTime.UtcNow.AddMinutes(accessTokenExpiryMinutes);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                new Claim(ClaimTypes.Name, user.Username ?? ""),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString() ?? Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Email, user.Email ?? ""),
-                new Claim("RoleName", roleName ?? "")
+                    new Claim(ClaimTypes.Name, user.Username ?? ""),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email ?? ""),
+                    new Claim("RoleName", roleName ?? "")
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JwtSettings:AccessTokenExpiryMinutes"])),
+                Expires = expiresAt,
                 Issuer = _configuration["JwtSettings:Issuer"],
                 Audience = _configuration["JwtSettings:Audience"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature
+                )
             };
 
             var accessToken = tokenHandler.CreateToken(tokenDescriptor);
             var accessTokenString = tokenHandler.WriteToken(accessToken);
 
-            // Tạo Refresh Token
+            // Tạo Refresh Token và lưu vào user
             var refreshToken = GenerateRefreshToken();
             user.Token = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(
-                Convert.ToDouble(_configuration["JwtSettings:RefreshTokenExpirationDays"]));
-
+                Convert.ToDouble(_configuration["JwtSettings:RefreshTokenExpiryDays"]));
             await _unitOfWork.UserRepository.UpdateAsync(user);
             await _unitOfWork.SavechangeAsync();
+
+            var expiresInSeconds = (int)(expiresAt - DateTime.UtcNow).TotalSeconds;
 
             return new AuthResponseModel
             {
                 AccessToken = accessTokenString,
                 RefreshToken = refreshToken,
-                ExpiresIn = Convert.ToInt32(_configuration["JwtSettings:AccessTokenExpiryMinutes"]) * 60
+                ExpiresIn = expiresInSeconds
             };
         }
 

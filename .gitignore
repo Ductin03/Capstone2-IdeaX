@@ -8,3 +8,7 @@ appsettings.Production.json
 
 # Visual Studio cache files
 .vs/
+.vscode/
+.idea/
+
+obj/

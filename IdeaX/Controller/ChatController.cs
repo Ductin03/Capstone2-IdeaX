@@ -29,7 +29,7 @@ namespace IdeaX.Controller
         /// <param name="senderId">The sender's user ID</param>
         /// <param name="receiverId">The receiver's user ID</param>
         /// <returns>A list of chat messages between the sender and receiver</returns>
-        [Authorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Investor)]
+        [CustomAuthorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Investor)]
         [HttpGet("{senderId}/{receiverId}")]
         public async Task<IActionResult> GetMessages([FromQuery] Guid senderId, Guid receiverId)
         {
@@ -43,7 +43,7 @@ namespace IdeaX.Controller
         /// </summary>
         /// <param name="message">The message to send</param>
         /// <returns>A success message after sending the message</returns>
-        [Authorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Investor)]
+        [CustomAuthorize(RoleRequestModel.Admin, RoleRequestModel.Investor, RoleRequestModel.Investor)]
         [HttpPost]
         public async Task<IActionResult> SendMessage([FromBody] ChatMessage message)
         {

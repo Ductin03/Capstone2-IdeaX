@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using IdeaX.Model.ResponseModels;
 
 namespace IdeaX.Controller
 {
@@ -29,8 +30,19 @@ namespace IdeaX.Controller
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestModel request)
         {
-            var token = await _authService.Authentication(request);
-            return Ok( new { token = token });
+            try
+            {
+                var auth = await _authService.Authentication(request);
+                return Ok(auth);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
         }
 
         [HttpPost("refresh-token")]

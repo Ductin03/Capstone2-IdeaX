@@ -12,7 +12,7 @@ namespace IdeaX.Entities
         public string Email { get; set; }
         [Required]
         [MaxLength(250)]
-        public string Token { get; set; }
+        public string? Token { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
         [Required, MaxLength(250)]
         public string FullName{ get; set; }
