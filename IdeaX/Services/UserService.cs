@@ -54,16 +54,16 @@ namespace IdeaX.Services
 
                 if (userExist)
                 {
-                    return new Responses(false, "username invalid");
+                    return new Responses(false, "Tài khoản đã được sử dụng");
                 }
                 if (model.Password != model.ConfirmPassword)
                 {
-                    return new Responses(false, "Passwords do not match");
+                    return new Responses(false, "Mật khẩu xác nhận không khớp");
                 }
                 var emailExist = await _unitOfWork.UserRepository.CheckIfEmailExistAsync(model.Email);
                 if (emailExist != null)
                 {
-                    return new Responses(false, "email invalid");
+                    return new Responses(false, "Email đã được sử dụng");
 
                 }
                 //if (model.CCCDBack != null)
@@ -94,15 +94,15 @@ namespace IdeaX.Services
 
                 if (roleExist == null)
                 {
-                    return new Responses(false, $"Role not exist");
+                    return new Responses(false, $"Vai trò này không có sẵn");
                 }
                 if (string.IsNullOrEmpty(model.Password) || model.Password.Length < 8)
                 {
-                    return new Responses(false, "Please enter a password of more than 8 characters");
+                    return new Responses(false, "Mật khẩu phải lớn hơn 8 ký tự");
                 }
                 if (model.Birthday > DateTime.Today)
                 {
-                    return new Responses(false, "ngay sinh khong duoc lon hon hien tai ");
+                    return new Responses(false, "Ngày sinh không được lớn hơn ngày hiện tại");
                 }
                 var jsonData = JsonSerializer.Serialize(model);
 
@@ -144,11 +144,11 @@ namespace IdeaX.Services
                     EmailBody = emailBody
                 });
 
-                return new Responses(true, "OTP has been sent to your email. Please verify to complete registration.");
+                return new Responses(true, "Một mã OTP đã được gửi tới Email. Vui lòng xác nhận để đăng ký");
             }
             catch (Exception ex)
             {
-                return new Responses(false, $"An error occurred during the add process {ex.Message}");
+                return new Responses(false, $"Có lỗi xảy ra trong quá trình xử lý: {ex.Message}");
             }
         }
 
@@ -228,7 +228,7 @@ namespace IdeaX.Services
 
                 if (verification == null || verification.ExpirationTime < DateTime.UtcNow)
                 {
-                    return new Responses(false, "Invalid or expired OTP.");
+                    return new Responses(false, "OTP không đúng hoặc đã quá hạn!");
                 }
                 var model = JsonSerializer.Deserialize<UserRequestModel>(verification.Data);
                 if (email != model!.Email)
@@ -273,7 +273,7 @@ namespace IdeaX.Services
                 _unitOfWork.Context.Verifications.Remove(verification);
                 await _unitOfWork.SavechangeAsync();
 
-                return new Responses(true, "Account successfully created.");
+                return new Responses(true, "Tài khoản đã được tạo thành công");
             }
             catch (Exception ex)
             {

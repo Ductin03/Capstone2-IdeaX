@@ -41,7 +41,7 @@ namespace IdeaX.Controller
         public async Task<IActionResult> VerifyOtp([FromBody] OtpVerificationRequestModel model)
         {
             var response = await _userService.VerifyOTP(model.OTP, model.Email);
-            return Ok(response);
+            return response.Flag ? Ok(response) : BadRequest(response);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace IdeaX.Controller
         /// <param name="request">The request containing updated user details</param>
         /// <returns>A response indicating success or failure</returns>
         [HttpPatch("{id}")]
-        public async Task<ActionResult<Responses>> UpdateUser(Guid id, UpdateUserRequestModel request)
+        public async Task<ActionResult<Responses>> UpdateUser(Guid id,[FromBody] UpdateUserRequestModel request)
         {
             var response = await _userService.Update(id, request);
             return response.Flag ? Ok(request) : BadRequest(response);
